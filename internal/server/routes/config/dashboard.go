@@ -22,7 +22,8 @@ func (d DashboardRoutesConfig) ConfigureDashboardRoutes(router *mux.Router) *mux
 	router.Handle("/dashboard", dashboardAuth.Handler(d.dr.GetDashboard())).Methods("GET")
 
 	// Post Routes
-
+	router.HandleFunc("/dashboard/get_trainings", d.dr.GetDashboardTrainings()).Methods("POST")
+	router.HandleFunc("/dashboard/get_trainings_limit", d.dr.GetTrainingsLimit()).Methods("POST")
 	// Put Routes
 
 	// Delete Routes
