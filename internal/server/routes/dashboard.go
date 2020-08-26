@@ -2,8 +2,12 @@ package routes
 
 import (
 	"encoding/json"
+	"mytrainingsserver/pkg/common"
 	dashboardrepository "mytrainingsserver/pkg/server/repository/dashboard"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // Dashboard ...
@@ -41,5 +45,23 @@ func (d *Dashboard) GetTrainingsLimit() http.HandlerFunc {
 		result := dashboardrepository.GetLimit()
 
 		json.NewEncoder(w).Encode(result)
+	}
+}
+
+// GetExercises ....
+func (d *Dashboard) GetExercises() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		param := mux.Vars(r)
+		intParam, err := strconv.Atoi(param["id"])
+		result := "Неверный параметр"
+		if err != nil {
+			common.LogFatal(err)
+			json.NewEncoder(w).Encode(result)
+		} else {
+			result := dashboardrepository.GetExercises(intParam)
+
+			json.NewEncoder(w).Encode(result)
+		}
+
 	}
 }
