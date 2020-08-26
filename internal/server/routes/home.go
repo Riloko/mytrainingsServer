@@ -111,7 +111,7 @@ func (h Home) PostRegistrationHome() http.HandlerFunc {
 		http.SetCookie(w, &cookie)
 		w.WriteHeader(http.StatusOK)
 
-		// json.NewEncoder(w).Encode(&User)
+		json.NewEncoder(w).Encode(&user)
 		// res.Body = ioutil.NopCloser()
 	}
 }
