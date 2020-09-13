@@ -6,13 +6,15 @@ import (
 	"mytrainingsserver/pkg/common"
 	"mytrainingsserver/pkg/server/repository"
 	"os"
+	"time"
 
 	"mytrainingsserver/internal/server/models"
 )
 
 // GetExercises ...
-func GetExercises(trainingID int) []models.Exercise {
-	var exercises []models.Exercise
+func GetExercises(trainingID int) []map[string]interface{} {
+	var exerciseArr []map[string]interface{}
+	var item map[string]interface{}
 	var exercise models.Exercise
 
 	db := repository.Connect()
@@ -26,12 +28,25 @@ func GetExercises(trainingID int) []models.Exercise {
 	for rows.Next() {
 		err := rows.Scan(&exercise.ID, &exercise.TrainingID, &exercise.Image, &exercise.Name, &exercise.Description, &exercise.Type, &exercise.IsGeo, &exercise.Difficulty, &exercise.Time)
 		common.LogFatal(err)
+		t := time.Time(exercise.Time)
 
-		exercises = append(exercises, exercise)
+		item = map[string]interface{}{
+			"id":          exercise.ID,
+			"training_id": exercise.TrainingID,
+			"image_url":   exercise.Image,
+			"name":        exercise.Name,
+			"description": exercise.Description,
+			"type":        exercise.Type,
+			"geo":         exercise.IsGeo,
+			"difficulty":  exercise.Difficulty,
+			"time":        t.Minute(),
+		}
+
+		exerciseArr = append(exerciseArr, item)
 	}
 
 	err = db.Close(context.Background())
 	common.LogFatal(err)
 
-	return exercises
+	return exerciseArr
 }

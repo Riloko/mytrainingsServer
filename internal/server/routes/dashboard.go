@@ -65,3 +65,46 @@ func (d *Dashboard) GetExercises() http.HandlerFunc {
 
 	}
 }
+
+// GetExercisesQueue ....
+func (d *Dashboard) GetExercisesQueue() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		param := mux.Vars(r)
+		intParam, err := strconv.Atoi(param["id"])
+		result := "Неверный параметр"
+		if err != nil {
+			common.LogFatal(err)
+			json.NewEncoder(w).Encode(result)
+		} else {
+			result := dashboardrepository.GetExercisesQueue(intParam)
+
+			json.NewEncoder(w).Encode(result)
+		}
+
+	}
+}
+
+// GetExercise ....
+func (d *Dashboard) GetExercise() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		param := mux.Vars(r)
+		var exerciseID map[string]int
+
+		json.NewDecoder(r.Body).Decode(&exerciseID)
+
+		println(exerciseID)
+
+		intParam, err := strconv.Atoi(param["id"])
+		result := "Неверный параметр"
+		if err != nil {
+			common.LogFatal(err)
+
+			json.NewEncoder(w).Encode(result)
+		} else {
+			result := dashboardrepository.GetExercise(intParam, exerciseID["id"])
+
+			json.NewEncoder(w).Encode(result)
+		}
+
+	}
+}
